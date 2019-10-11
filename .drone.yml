@@ -1,0 +1,67 @@
+kind: pipeline
+type: docker
+name: default
+
+steps:
+- name: build
+  image: golang
+  commands:
+  - go build -o hello
+
+- name: testing
+  image: golang
+  commands:
+  - go fmt
+  - go vet
+  - go test
+
+trigger:
+  event:
+    include:
+    - pull_request
+
+---
+kind: pipeline
+type: docker
+name: production
+
+steps:
+- name: build
+  image: golang
+  commands:
+  - go build -o hello
+
+- name: testing
+  image: golang
+  commands:
+  - go fmt
+  - go vet
+  - go test
+
+- name: deploy
+  image: appleboy/drone-scp
+  settings:
+    host: 34.69.90.110
+    target: /usr/local/bin/
+    source: hello
+    user: andi
+    password:
+        from_secret: ssh_passwd
+    port: 22
+
+- name: restart supervisor
+  image: appleboy/drone-ssh
+  settings:
+    host: 34.69.90.110
+    username: andi
+    password:
+        from_secret: ssh_passwd
+    port: 22
+    script:
+        - sudo service supervisor restart
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
