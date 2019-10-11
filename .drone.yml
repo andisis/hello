@@ -23,7 +23,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: production
+name: deployment
 
 steps:
 - name: build
@@ -41,7 +41,7 @@ steps:
 - name: deploy
   image: appleboy/drone-scp
   settings:
-    host: 34.69.90.110
+    host: 35.222.108.34
     target: /usr/local/bin/
     source: hello
     user: andi
@@ -52,7 +52,7 @@ steps:
 - name: restart supervisor
   image: appleboy/drone-ssh
   settings:
-    host: 34.69.90.110
+    host: 35.222.108.34
     username: andi
     password:
         from_secret: ssh_passwd
