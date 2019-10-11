@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-const resp = "Hai, nama saya %s"
+const resp = "Halo, nama saya %s"
 
 func main() {
 	http.HandleFunc("/", greetingHandler)
